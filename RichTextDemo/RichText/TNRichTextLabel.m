@@ -70,15 +70,31 @@
 }
 
 #pragma mark - touch events
+// 点击事件在链接上才触发touch事件
+- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event
+{
+    NSRange stringRange = NSMakeRange(0, self.textStorage.length);
+    CGRect rect = [self.layoutManager boundingRectForGlyphRange:stringRange inTextContainer:self.textContainer];
+    BOOL isPointOnGlyph = CGRectContainsPoint(rect, point);
+    if (!isPointOnGlyph) {
+        return NO;
+    }
+    
+    NSUInteger index = [self.layoutManager glyphIndexForPoint:point inTextContainer:self.textContainer];
+    for (NSString *rangeString in self.linksDict) {
+        NSRange range = NSRangeFromString(rangeString);
+        if (NSLocationInRange(index, range)) {
+            return YES;
+            break;
+        }
+    }
+    return NO;
+}
+
 - (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
     UITouch *touch = touches.anyObject;
     CGPoint location = [touch locationInView:self];
-    NSRange stringRange = NSMakeRange(0, self.textStorage.length);
-    CGRect rect = [self.layoutManager boundingRectForGlyphRange:stringRange inTextContainer:self.textContainer];
-    if (!CGRectContainsPoint(rect, location)) {
-        return;
-    }
     
     NSUInteger index = [self.layoutManager glyphIndexForPoint:location inTextContainer:self.textContainer];
     id value = nil;
