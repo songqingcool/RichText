@@ -24,6 +24,7 @@
 		E93FBA2F205132DB004D2A2F /* RichModel.m in Sources */ = {isa = PBXBuildFile; fileRef = E93FBA2E205132DB004D2A2F /* RichModel.m */; };
 		E93FBA3220514558004D2A2F /* trends_location@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E93FBA3020514558004D2A2F /* trends_location@2x.png */; };
 		E93FBA3320514558004D2A2F /* trends_location@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E93FBA3120514558004D2A2F /* trends_location@3x.png */; };
+		E9FB2ED52052292900AF3A6C /* ResourceEmoji.bundle in Resources */ = {isa = PBXBuildFile; fileRef = E9FB2ED42052292900AF3A6C /* ResourceEmoji.bundle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -76,6 +77,7 @@
 		E93FBA2E205132DB004D2A2F /* RichModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RichModel.m; sourceTree = "<group>"; };
 		E93FBA3020514558004D2A2F /* trends_location@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trends_location@2x.png"; sourceTree = "<group>"; };
 		E93FBA3120514558004D2A2F /* trends_location@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trends_location@3x.png"; sourceTree = "<group>"; };
+		E9FB2ED42052292900AF3A6C /* ResourceEmoji.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ResourceEmoji.bundle; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,6 +129,7 @@
 		E93FB9E620512D4A004D2A2F /* RichTextDemo */ = {
 			isa = PBXGroup;
 			children = (
+				E9FB2ED42052292900AF3A6C /* ResourceEmoji.bundle */,
 				E93FBA3020514558004D2A2F /* trends_location@2x.png */,
 				E93FBA3120514558004D2A2F /* trends_location@3x.png */,
 				E93FB9E720512D4A004D2A2F /* AppDelegate.h */,
@@ -295,6 +298,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E9FB2ED52052292900AF3A6C /* ResourceEmoji.bundle in Resources */,
 				E93FBA3320514558004D2A2F /* trends_location@3x.png in Resources */,
 				E93FB9F420512D4B004D2A2F /* LaunchScreen.storyboard in Resources */,
 				E93FB9F120512D4B004D2A2F /* Assets.xcassets in Resources */,
