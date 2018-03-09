@@ -8,13 +8,22 @@
 
 #import "TNRichTextLabel.h"
 
+#define kLongPressMinimumDuration 0.5 // Time in seconds the fingers must be held down for long press gesture.
+#define kLongPressAllowableMovement 9.0 // Maximum movement in points allowed before the long press fails.
+#define kHighlightFadeDuration 0.15 // Time in seconds for highlight fadeout animation.
+
 @interface TNRichTextLabel ()
 
 @property (nonatomic, strong) NSTextStorage *textStorage;
 @property (nonatomic, strong) NSLayoutManager *layoutManager;
 @property (nonatomic, strong) NSTextContainer *textContainer;
 
+// 超链接的<rangString:value>
 @property (nonatomic, strong) NSMutableDictionary *linksDict;
+
+// 长按
+@property (nonatomic, strong) NSTimer *longPressTimer;
+@property (nonatomic) CGPoint touchBeganPoint;
 
 @end
 
@@ -27,7 +36,6 @@
         [self.textStorage addLayoutManager:self.layoutManager];
         [self.layoutManager addTextContainer:self.textContainer];
         self.textContainer.lineFragmentPadding = 0;
-        self.userInteractionEnabled = YES;
     }
     return self;
 }
@@ -70,26 +78,26 @@
 }
 
 #pragma mark - touch events
-// 点击事件在链接上才触发touch事件
-- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event
-{
-    NSRange stringRange = NSMakeRange(0, self.textStorage.length);
-    CGRect rect = [self.layoutManager boundingRectForGlyphRange:stringRange inTextContainer:self.textContainer];
-    BOOL isPointOnGlyph = CGRectContainsPoint(rect, point);
-    if (!isPointOnGlyph) {
-        return NO;
-    }
-    
-    NSUInteger index = [self.layoutManager glyphIndexForPoint:point inTextContainer:self.textContainer];
-    for (NSString *rangeString in self.linksDict) {
-        NSRange range = NSRangeFromString(rangeString);
-        if (NSLocationInRange(index, range)) {
-            return YES;
-            break;
-        }
-    }
-    return NO;
-}
+//// 点击事件在链接上才触发touch事件
+//- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event
+//{
+//    NSRange stringRange = NSMakeRange(0, self.textStorage.length);
+//    CGRect rect = [self.layoutManager boundingRectForGlyphRange:stringRange inTextContainer:self.textContainer];
+//    BOOL isPointOnGlyph = CGRectContainsPoint(rect, point);
+//    if (!isPointOnGlyph) {
+//        return NO;
+//    }
+//
+//    NSUInteger index = [self.layoutManager glyphIndexForPoint:point inTextContainer:self.textContainer];
+//    for (NSString *rangeString in self.linksDict) {
+//        NSRange range = NSRangeFromString(rangeString);
+//        if (NSLocationInRange(index, range)) {
+//            return YES;
+//            break;
+//        }
+//    }
+//    return NO;
+//}
 
 - (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
@@ -98,17 +106,23 @@
     
     NSUInteger index = [self.layoutManager glyphIndexForPoint:location inTextContainer:self.textContainer];
     id value = nil;
+    BOOL swallowTouch = NO;
     for (NSString *rangeString in self.linksDict) {
         NSRange range = NSRangeFromString(rangeString);
         BOOL flag = NSLocationInRange(index, range);
         if (flag) {
+            swallowTouch = YES;
             value = [self.linksDict objectForKey:rangeString];
             break;
         }
     }
-    NSLog(@"NSLinkAttributeName设置的值:%@",value);
-    if (value && self.linkBlock) {
-        self.linkBlock(value);
+    
+    if (swallowTouch) {
+        if (self.linkBlock) {
+            self.linkBlock(value);
+        }
+    }else {
+        [super touchesEnded:touches withEvent:event];
     }
 }
 

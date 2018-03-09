@@ -69,6 +69,7 @@
 {
     RichModel *model = [self.dataArray objectAtIndex:indexPath.row];
     RichTextCell *cell = [tableView dequeueReusableCellWithIdentifier:@"RichTextCell" forIndexPath:indexPath];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.model = model;
     return cell;
 }
