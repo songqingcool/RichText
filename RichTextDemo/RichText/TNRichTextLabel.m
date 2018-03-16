@@ -35,6 +35,7 @@
     if (self) {
         [self.textStorage addLayoutManager:self.layoutManager];
         [self.layoutManager addTextContainer:self.textContainer];
+        self.layoutManager.allowsNonContiguousLayout = NO;
         self.textContainer.lineFragmentPadding = 0;
     }
     return self;
@@ -101,6 +102,11 @@
 
 - (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
+    if (!self.linksDict.count) {
+        [super touchesEnded:touches withEvent:event];
+        return;
+    }
+    
     UITouch *touch = touches.anyObject;
     CGPoint location = [touch locationInView:self];
     

@@ -25,6 +25,9 @@
         NSAttributedString *s = [[NSAttributedString alloc] initWithString:@"17600332013" attributes:@{NSLinkAttributeName:@"www.baidu.com",NSForegroundColorAttributeName:[UIColor redColor],NSFontAttributeName:[UIFont systemFontOfSize:14.0],NSUnderlineStyleAttributeName:@(NSUnderlineStyleSingle)}];
         [string appendAttributedString:s];
         
+         NSMutableAttributedString *string2 = [[NSMutableAttributedString alloc] initWithString:@"\n\n" attributes:@{NSForegroundColorAttributeName:[UIColor redColor],NSFontAttributeName:[UIFont systemFontOfSize:14.0]}];
+        [string appendAttributedString:string2];
+        
         NSTextAttachment *attach1 = [[NSTextAttachment alloc] init];
         attach1.image = [UIImage imageNamed:@"trends_location"];
         attach1.bounds = CGRectMake(0, -3, 18, 14);

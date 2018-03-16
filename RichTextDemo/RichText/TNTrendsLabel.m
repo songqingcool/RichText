@@ -11,7 +11,6 @@
 
 @interface TNTrendsLabel ()<UITextViewDelegate,UITextDragDelegate>
 
-
 @end
 
 @implementation TNTrendsLabel
@@ -28,7 +27,7 @@
         self.showsVerticalScrollIndicator = NO;
         self.showsHorizontalScrollIndicator = NO;
         self.scrollEnabled = NO;
-        self.layoutManager.allowsNonContiguousLayout = YES;
+        self.layoutManager.allowsNonContiguousLayout = NO;
         self.textContainer.lineFragmentPadding = 0;
         self.textContainerInset = UIEdgeInsetsZero;
     }
