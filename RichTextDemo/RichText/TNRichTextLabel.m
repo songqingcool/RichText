@@ -8,10 +8,6 @@
 
 #import "TNRichTextLabel.h"
 
-#define kLongPressMinimumDuration 0.5 // Time in seconds the fingers must be held down for long press gesture.
-#define kLongPressAllowableMovement 9.0 // Maximum movement in points allowed before the long press fails.
-#define kHighlightFadeDuration 0.15 // Time in seconds for highlight fadeout animation.
-
 @interface TNRichTextLabel ()
 
 @property (nonatomic, strong) NSTextStorage *textStorage;
@@ -20,10 +16,6 @@
 
 // 超链接的<rangString:value>
 @property (nonatomic, strong) NSMutableDictionary *linksDict;
-
-// 长按
-@property (nonatomic, strong) NSTimer *longPressTimer;
-@property (nonatomic) CGPoint touchBeganPoint;
 
 @end
 
