@@ -24,6 +24,7 @@
 		E93FBA2F205132DB004D2A2F /* RichModel.m in Sources */ = {isa = PBXBuildFile; fileRef = E93FBA2E205132DB004D2A2F /* RichModel.m */; };
 		E93FBA3220514558004D2A2F /* trends_location@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E93FBA3020514558004D2A2F /* trends_location@2x.png */; };
 		E93FBA3320514558004D2A2F /* trends_location@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E93FBA3120514558004D2A2F /* trends_location@3x.png */; };
+		E9D8524D206C871000246A59 /* TNTrendsTextRunDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D8524C206C871000246A59 /* TNTrendsTextRunDelegate.m */; };
 		E9FB2ED52052292900AF3A6C /* ResourceEmoji.bundle in Resources */ = {isa = PBXBuildFile; fileRef = E9FB2ED42052292900AF3A6C /* ResourceEmoji.bundle */; };
 /* End PBXBuildFile section */
 
@@ -77,6 +78,8 @@
 		E93FBA2E205132DB004D2A2F /* RichModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RichModel.m; sourceTree = "<group>"; };
 		E93FBA3020514558004D2A2F /* trends_location@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trends_location@2x.png"; sourceTree = "<group>"; };
 		E93FBA3120514558004D2A2F /* trends_location@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trends_location@3x.png"; sourceTree = "<group>"; };
+		E9D8524B206C871000246A59 /* TNTrendsTextRunDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TNTrendsTextRunDelegate.h; sourceTree = "<group>"; };
+		E9D8524C206C871000246A59 /* TNTrendsTextRunDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TNTrendsTextRunDelegate.m; sourceTree = "<group>"; };
 		E9FB2ED42052292900AF3A6C /* ResourceEmoji.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ResourceEmoji.bundle; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -186,6 +189,8 @@
 				E93FBA1E20512E1E004D2A2F /* NSURL+TrendsLabel.m */,
 				E93FBA1F20512E1E004D2A2F /* TNEmojiUtility.h */,
 				E93FBA1D20512E1E004D2A2F /* TNEmojiUtility.m */,
+				E9D8524B206C871000246A59 /* TNTrendsTextRunDelegate.h */,
+				E9D8524C206C871000246A59 /* TNTrendsTextRunDelegate.m */,
 				E93FBA2820512F81004D2A2F /* TNEmoji.h */,
 				E93FBA2720512F81004D2A2F /* TNEmoji.m */,
 			);
@@ -331,6 +336,7 @@
 				E93FB9EC20512D4B004D2A2F /* ViewController.m in Sources */,
 				E93FBA2320512E1E004D2A2F /* TNEmojiUtility.m in Sources */,
 				E93FBA2C205131D9004D2A2F /* RichTextCell.m in Sources */,
+				E9D8524D206C871000246A59 /* TNTrendsTextRunDelegate.m in Sources */,
 				E93FBA2920512F81004D2A2F /* TNEmoji.m in Sources */,
 				E93FBA2420512E1E004D2A2F /* NSURL+TrendsLabel.m in Sources */,
 				E93FBA2F205132DB004D2A2F /* RichModel.m in Sources */,

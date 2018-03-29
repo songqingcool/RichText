@@ -9,7 +9,7 @@
 #import "TNEmojiUtility.h"
 #import "TNEmoji.h"
 #import "NSURL+TrendsLabel.h"
-#import <UIKit/UIKit.h>
+#import "TNTrendsTextRunDelegate.h"
 
 //自定义表情的图片路径
 #define TNRESOURCEEMOJI_BUNDLE_PATH(_FILE_NAME_) [NSString stringWithFormat:@"ResourceEmoji.bundle/com.toon.default/%@",_FILE_NAME_]
@@ -20,6 +20,11 @@
 #define kLINK_REGULAR_RULE  @"((http[s]{0,1}|ftp)://[a-zA-Z0-9\\.\\-]+\\.([a-zA-Z]{2,4})(:\\d+)?(/[a-zA-Z0-9\\.\\-~!@#$%^&*+?:_/=<>]*)?)|(www.[a-zA-Z0-9\\.\\-]+\\.([a-zA-Z]{2,4})(:\\d+)?(/[a-zA-Z0-9\\.\\-~!@#$%^&*+?:_/=<>]*)?)|(http[s]{0,1}|ftp)://\\d+\\.\\d+\\.\\d+\\.\\d+[^\\s]*"
 // 自定义表情正则表达式匹配规则
 #define kEMOJI_REGULAR_RULE  @"(\\[[^\\]]*\\])"
+
+// 行末截断留余量
+static const CGFloat kRightMargin = 5.0;
+// 默认行高
+static const CGFloat kDefaultLineHeight = 30.0;
 
 @interface TNEmojiUtility ()
 
@@ -168,11 +173,13 @@
 {
     NSMutableAttributedString *retString = [attributedString mutableCopy];
     [attributedString enumerateAttribute:NSAttachmentAttributeName inRange:NSMakeRange(0, attributedString.length) options:NSAttributedStringEnumerationReverse usingBlock:^(id value, NSRange range, BOOL *stop) {
-        //将🙂转换为[微笑]
-        NSTextAttachment *attachment = (NSTextAttachment *)value;
-        NSString *imageName = attachment.image.accessibilityIdentifier;
-        if (imageName) {
-            [retString replaceCharactersInRange:range withString:imageName];
+        if (value) {
+            //将🙂转换为[微笑]
+            NSTextAttachment *attachment = (NSTextAttachment *)value;
+            NSString *imageName = attachment.image.accessibilityIdentifier;
+            if (imageName) {
+                [retString replaceCharactersInRange:range withString:imageName];
+            }
         }
     }];
     return retString.string;
@@ -198,7 +205,7 @@
                                                                            inString:attributedString.string
                                                                              offset:0
                                                                            template:@"$0"];
-        NSURL *url = [[NSURL alloc] init];
+        NSURL *url = [[NSURL alloc] initWithString:@""];
         NSMutableDictionary *dict = [NSMutableDictionary dictionary];
         [dict setValue:matchString forKey:@"url"];
         [dict setValue:@(NSTextCheckingTypePhoneNumber) forKey:@"type"];
@@ -214,13 +221,138 @@
                                                                                  inString:attributedString.string
                                                                                    offset:0
                                                                                  template:@"$0"];
-        NSURL *url = [[NSURL alloc] init];
+        NSURL *url = [[NSURL alloc] initWithString:@""];
         NSMutableDictionary *dict = [NSMutableDictionary dictionary];
         [dict setValue:matchString forKey:@"url"];
         [dict setValue:@(NSTextCheckingTypeLink) forKey:@"type"];
         url.userInfo = dict;
         [retString addAttribute:NSLinkAttributeName value:url range:result.range];
     }];
+    return retString;
+}
+
+#pragma mark - 指定行数截取
+/**
+ 最多显示多少行，尾部截断并添加truncateString
+ 
+ @param maxRow 最多显示多少行
+ @param width 文本展示宽度约束
+ @param truncateString 截断字符串(如:"...")
+ @return 截断之后要显示的富媒体字符串
+ */
+- (NSAttributedString *)clipsStringWithAttributedString:(NSAttributedString *)string
+                                                 maxRow:(NSInteger)maxRow
+                                                  width:(CGFloat)width
+                                         truncateString:(NSAttributedString *)truncateString
+{
+    //
+    NSAttributedString *tempString = [string copy];
+    // 五行处理
+    NSArray *linesArray = [self separatedLinesDealWithAttributedString:tempString width:width];
+    NSMutableAttributedString *retString = [[NSMutableAttributedString alloc] init];
+    for (int i = 0; i < linesArray.count; i++) {
+        NSAttributedString *string = [linesArray objectAtIndex:i];
+        if (i == maxRow-1) {
+            NSAttributedString *truncatedString = [self truncateDealWithAttributedString:string maxWidth:width placeHolder:truncateString forceAdd:linesArray.count>maxRow];
+            [retString appendAttributedString:truncatedString];
+            break;
+        }
+        [retString appendAttributedString:string];
+    }
+    return retString;
+}
+
+// 根据宽度和label显示的属性得到按行分隔好的字符串数组
+- (NSArray<NSAttributedString *> *)separatedLinesDealWithAttributedString:(NSAttributedString *)string width:(CGFloat)width
+{
+    //
+    NSAttributedString *tempString = [self addRunDelegateDealWithAttributedString:string];
+    // 多行处理
+    CTFramesetterRef frameSetter = CTFramesetterCreateWithAttributedString((__bridge CFAttributedStringRef)tempString);
+    CGMutablePathRef path = CGPathCreateMutable();
+    CGPathAddRect(path, NULL, CGRectMake(0.0,0.0,width,CGFLOAT_MAX));
+    CTFrameRef frame = CTFramesetterCreateFrame(frameSetter, CFRangeMake(0, 0), path, NULL);
+    CFArrayRef lines = CTFrameGetLines(frame);
+    NSMutableArray *linesArray = [[NSMutableArray alloc]init];
+    CFIndex lineCount = CFArrayGetCount(lines);
+    for (CFIndex idx = 0; idx < lineCount; idx++) {
+        CTLineRef line = CFArrayGetValueAtIndex(lines, idx);
+        CFRange lineRange = CTLineGetStringRange(line);
+        NSRange range = NSMakeRange(lineRange.location, lineRange.length);
+        NSAttributedString *lineString = [tempString attributedSubstringFromRange:range];
+        NSAttributedString *resultString = [self deleteRunDelegateDealWithAttributedString:lineString];
+        [linesArray addObject:resultString];
+    }
+    
+    CFRelease(frameSetter);
+    CFRelease(path);
+    CFRelease(frame);
+    return linesArray;
+}
+
+// 截取当前字符串的子串，使子串加上holder小于width宽度。返回值为子串
+- (NSAttributedString *)truncateDealWithAttributedString:(NSAttributedString *)string
+                                                maxWidth:(CGFloat)width
+                                             placeHolder:(NSAttributedString *)holder
+                                                forceAdd:(BOOL)forceAdd
+{
+    NSAttributedString *addedString = [self addRunDelegateDealWithAttributedString:string];
+    NSAttributedString *addedHolder = [self addRunDelegateDealWithAttributedString:holder];
+    // 按照宽度截取并按需要添加上holder
+    NSMutableAttributedString *retString = [addedString mutableCopy];
+    BOOL isClipped = NO;
+    while (true) {
+        NSMutableAttributedString *tempString = [retString mutableCopy];
+        [tempString appendAttributedString:addedHolder];
+        // 计算行宽
+        CTFramesetterRef frameSetter = CTFramesetterCreateWithAttributedString((__bridge CFAttributedStringRef)tempString);
+        CGSize suggestedSize = CTFramesetterSuggestFrameSizeWithConstraints(frameSetter, CFRangeMake(0, tempString.length), NULL, CGSizeMake(CGFLOAT_MAX, kDefaultLineHeight), NULL);
+        CFRelease(frameSetter);
+        if (suggestedSize.width <= width-kRightMargin) {
+            break;
+        }
+        __block NSRange range = NSMakeRange(0, 0);
+        [retString.string enumerateSubstringsInRange:NSMakeRange(0, retString.length) options:NSStringEnumerationByComposedCharacterSequences|NSStringEnumerationReverse usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
+            range = substringRange;
+            *stop = YES;
+        }];
+        if (!isClipped) {
+            isClipped = YES;
+        }
+        [retString deleteCharactersInRange:range];
+    }
+    if (isClipped || forceAdd) {
+        [retString appendAttributedString:addedHolder];
+    }
+    NSAttributedString *resultString = [self deleteRunDelegateDealWithAttributedString:retString];
+    return resultString;
+}
+
+// 为NSAttachment添加runDelete
+- (NSAttributedString *)addRunDelegateDealWithAttributedString:(NSAttributedString *)string
+{
+    NSMutableAttributedString *retString = [string mutableCopy];
+    [string enumerateAttribute:NSAttachmentAttributeName inRange:NSMakeRange(0, string.length) options:NSAttributedStringEnumerationReverse usingBlock:^(id value, NSRange range, BOOL *stop) {
+        if (value) {
+            NSTextAttachment *attachment = (NSTextAttachment *)value;
+            TNTrendsTextRunDelegate *delegate = [[TNTrendsTextRunDelegate alloc] init];
+            delegate.width = CGRectGetWidth(attachment.bounds);
+            delegate.ascent = CGRectGetHeight(attachment.bounds)+CGRectGetMinY(attachment.bounds);
+            delegate.descent = ABS(CGRectGetMinY(attachment.bounds));
+            if (delegate.descent < 0) delegate.descent = 0;
+            CTRunDelegateRef delegateRef = delegate.CTRunDelegate;
+            [retString addAttribute:(id)kCTRunDelegateAttributeName value:(__bridge id)delegateRef range:range];
+            if (delegate) CFRelease(delegateRef);
+        }
+    }];
+    return retString;
+}
+
+// 为NSAttachment移除runDelete
+- (NSAttributedString *)deleteRunDelegateDealWithAttributedString:(NSAttributedString *)string
+{
+    NSMutableAttributedString *retString = [string mutableCopy];
+    [retString removeAttribute:(id)kCTRunDelegateAttributeName range:NSMakeRange(0, retString.length)];
     return retString;
 }
 
