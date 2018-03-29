@@ -2,7 +2,7 @@
 //  TNEmojiUtility.m
 //  Pods
 //
-//  Created by 牛金涌 on 24/07/2017.
+//  Created by  on 24/07/2017.
 //
 //
 

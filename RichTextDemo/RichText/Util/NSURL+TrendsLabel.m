@@ -1,9 +1,9 @@
 //
 //  NSURL+TrendsLabel.m
-//  TNTrendsLibrary
+//  NSURL+TrendsLabel
 //
 //  Created by 宋庆功 on 2018/3/6.
-//  Copyright © 2018年 思源. All rights reserved.
+//  Copyright © 2018年 . All rights reserved.
 //
 
 #import "NSURL+TrendsLabel.h"

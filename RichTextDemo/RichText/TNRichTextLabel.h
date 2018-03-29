@@ -1,9 +1,9 @@
 //
 //  TNRichTextLabel.h
-//  TNContentBaseView
+//  TNRichTextLabel
 //
 //  Created by 宋庆功 on 2018/3/8.
-//  Copyright © 2018年 思源. All rights reserved.
+//  Copyright © 2018年 . All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

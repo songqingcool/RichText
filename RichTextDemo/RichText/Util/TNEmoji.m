@@ -2,7 +2,7 @@
 //  TNEmoji.m
 //  Pods
 //
-//  Created by Maurice on 27/07/2017.
+//  Created by  on 27/07/2017.
 //
 //
 
