@@ -12,7 +12,7 @@
 #import "TNTrendsTextRunDelegate.h"
 
 //自定义表情的图片路径
-#define TNRESOURCEEMOJI_BUNDLE_PATH(_FILE_NAME_) [NSString stringWithFormat:@"ResourceEmoji.bundle/com.toon.default/%@",_FILE_NAME_]
+#define TNRESOURCEEMOJI_BUNDLE_PATH(_FILE_NAME_) [NSString stringWithFormat:@"ResourceEmoji.bundle/com.default/%@",_FILE_NAME_]
 
 // 手机号正则表达式匹配规则
 #define kPHONE_REGULAR_RULE  @"\\d{3}-\\d{8}|\\d{3}-\\d{7}|\\d{4}-\\d{8}|\\d{4}-\\d{7}|\\d{7,15}|(4|8)[0-9]{2,9}[-][0-9]{3,9}[-][0-9]{1,9}|(4|8)[0-9]{2,9}[-][0-9]{3,9}"
@@ -100,7 +100,7 @@ static const CGFloat kDefaultLineHeight = 30.0;
 {
     NSString *emojiBundlePath = [[NSBundle mainBundle] pathForResource:@"ResourceEmoji" ofType:@"bundle"];
     // 表情和表情Info.plist 在bundle 的路径
-    NSString *plistPath = [emojiBundlePath stringByAppendingPathComponent:@"com.toon.default/Emoji.plist"];
+    NSString *plistPath = [emojiBundlePath stringByAppendingPathComponent:@"com.default/Emoji.plist"];
     NSDictionary *emotions = [NSDictionary dictionaryWithContentsOfFile:plistPath][@"emotions"];
     for (NSDictionary *info in emotions) {
         TNEmoji *emoji = [[TNEmoji alloc] initWithInfo:info];

@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>id</key>
-	<string>com.toon.default</string>
+	<string>com.default</string>
 	<key>group_name</key>
 	<string>Emoji</string>
 	<key>emotions</key>
